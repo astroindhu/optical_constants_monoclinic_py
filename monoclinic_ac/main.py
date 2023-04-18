@@ -7,6 +7,7 @@ from genetic_algorithm_modules import ga_optical_constants, chisq, func_lsq_R
 from dispersion_fresnel_modules import calculate_rnk
 from input_data import r, v, p, viewing_angle
 
+spectra_range = {'R1': range(32), 'R2': range(32,81), 'R3':range(81, 116), 'R4':range(116, 210), 'R5':range(210, 359), 'R6':range(359, 405),  'R7': range(405, len(v))}
 
 def count(sett, rangee):
     c = 0
@@ -26,18 +27,17 @@ if os.path.isdir(lf):
 else:
     os.mkdir(lf)
 
-# max_num_oscillators_R1 = 1
-# max_num_oscillators_R2 = 2
-# max_num_oscillators_R3 = 2
-# max_num_oscillators_R4 = 4
-# max_num_oscillators_R5 = 5
-# max_num_oscillators_R6 = 5
-# max_num_oscillators_R7 = 0
+max_num_oscillators_R1 = 1
+max_num_oscillators_R2 = 2
+max_num_oscillators_R3 = 2
+max_num_oscillators_R4 = 4
+max_num_oscillators_R5 = 5
+max_num_oscillators_R6 = 5
+max_num_oscillators_R7 = 0
 
 osc2 = 1
 num_oscillators = 2
-total_num_oscillators = 13
-# total_num_oscillators = max_num_oscillators_R1 + max_num_oscillators_R2 + max_num_oscillators_R3 + max_num_oscillators_R4 + max_num_oscillators_R5 + max_num_oscillators_R6
+total_num_oscillators = max_num_oscillators_R1 + max_num_oscillators_R2 + max_num_oscillators_R3 + max_num_oscillators_R4 + max_num_oscillators_R5 + max_num_oscillators_R6
 run = 1
 
 while num_oscillators < total_num_oscillators:
@@ -119,27 +119,8 @@ while num_oscillators < total_num_oscillators:
 
     rfit_ga, n1_ga, k1_ga, n2_ga, k2_ga = calculate_rnk(ga_solution, p, viewing_angle)
 
-    #     fig, ax = plt.subplots(1,4, figsize=(15, 3))
-    #     ax[0].plot(v,n_ga,'r', label='n_ga')
-    #     ax[0].legend(bbox_to_anchor=(1,1))
-    #     ax[0].set_title('GA modelled n')
 
-    #     ax[1].plot(v,k_ga,'g', label='k_ga')
-    #     ax[1].legend(bbox_to_anchor=(1,1))
-    #     ax[1].set_title('GA modelled k')
-
-    #     ax[2].plot(v,R_ga,'b', label='R_ga')
-    #     ax[2].plot(v,R_smoothed,'k', label='R')
-    #     ax[2].legend(bbox_to_anchor=(1,1))
-    #     ax[2].set_title('GA modelled R')
-
-    #     ax[3].plot(v, R_smoothed-R_ga, label='residual R')
-    #     ax[3].set_ylim(-0.05, +0.05)
-    #     plt.show()
-
-    #     print("\t".join(map(str, ga_solution)))
-
-    print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=ga_solution_fitness))
+    # print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=ga_solution_fitness))
 
     if ga_instance.best_solution_generation != -1:
         print("Best fitness value reached after {best_solution_generation} generations.".format(

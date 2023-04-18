@@ -43,19 +43,19 @@ def fresnel_ac(e_xx, e_xy, e_yy, e_zz, alpha):
     zeds = np.zeros((1, 1, np.shape(e_xx)[2]))
 
     d_1 = np.concatenate(
-        (np.concatenate((e_xy * (1 - np.square(k_y) / e_zz), zeds, e_xy * (1 - np.square(k_y) / e_zz), zeds), axis=1),
+        (np.concatenate((e_xy*(1-np.divide(np.square(k_y),e_zz)), zeds, e_xy * (1 - np.square(k_y) / e_zz), zeds), axis=1),
          np.concatenate(
              (gamm1 * e_xy * (1 - np.square(k_y) / e_zz), zeds, gamm3 * e_xy * (1 - np.square(k_y) / e_zz), zeds),
              axis=1),
          np.concatenate(((1 - np.square(k_y) / e_zz) * (np.square(gamm1) - (e_xx - np.square(k_y))), zeds,
                          (1 - np.square(k_y) / e_zz) * (np.square(gamm3) - (e_xx - np.square(k_y))), zeds), axis=1),
-         np.concatenate(((np.power(gamm1, 3) - gamm1) * (e_xx - np.square(k_y)), zeds,
-                         (np.power(gamm3, 3) - gamm3) * (e_xx - np.square(k_y)), zeds), axis=1)), axis=0)
+         np.concatenate((np.power(gamm1, 3) - (gamm1 * (e_xx - np.square(k_y))), zeds,
+                         np.power(gamm3, 3) - (gamm3 * (e_xx - np.square(k_y))), zeds), axis=1)), axis=0)
 
     M = np.empty([4, 4, np.shape(d_1)[2]], dtype="complex")
 
     for i in np.arange(np.shape(d_1)[2]):
-        M[:, :, i] = d_0_inv[:, :, i] * d_1[:, :, i]
+        M[:, :, i] = np.matmul(d_0_inv[:, :, i], d_1[:, :, i])
 
     # calculate reflectance coefficients
     denom = (M[0, 0, :] * M[2, 2, :]) - (M[0, 2, :] * M[2, 0, :])
@@ -144,7 +144,7 @@ def dispersion_model_ac(nu, gamm, Sk, phi, theta, epsilxx, epsilxy, epsilyy, eps
         sl1 = (e_xx[i] + e_yy[i])/2 + np.sqrt((np.square(e_xx[i] - e_yy[i]))/4 + np.square(e_xy[i]))
         sl2 = (e_xx[i] + e_yy[i])/2 - np.sqrt((np.square(e_xx[i] - e_yy[i]))/4 + np.square(e_xy[i]))
 
-        if np.abs(sl1 - m1sq[i - 1]) < (abs(sl2 - m2sq[i - 1])):
+        if np.abs(sl1 - m1sq[i - 1]) < (abs(sl1 - m2sq[i - 1])):
             m1sq[i] = sl1
             m2sq[i] = sl2
         else:
