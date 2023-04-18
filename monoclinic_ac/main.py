@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 import shutil
 import os
-from genetic_algorithm_modules import ga_optical_constants
+from genetic_algorithm_modules import ga_optical_constants, chisq, func_lsq_R
 from dispersion_fresnel_modules import calculate_rnk
-from input_data import r, v, viewing_angle
+from input_data import r, v, p, viewing_angle
 
 
 def count(sett, rangee):
@@ -102,8 +102,8 @@ while num_oscillators < total_num_oscillators:
     lb_ga_theta = np.repeat(89, num_oscillators)
     ub_ga_theta = np.repeat(91, num_oscillators)
 
-    lb_ga = np.hstack((lb_ga_nu, lb_ga_gamm, lb_ga_Sk))  # lower bound of genes representing gamm, Sk
-    ub_ga = np.hstack((ub_ga_nu, ub_ga_gamm, ub_ga_Sk))  # upper bound of genes representing gamm, Sk
+    lb_ga = np.hstack((lb_ga_nu, lb_ga_gamm, lb_ga_Sk, lb_ga_phi, lb_ga_theta))  # lower bound of genes representing gamm, Sk
+    ub_ga = np.hstack((ub_ga_nu, ub_ga_gamm, ub_ga_Sk, ub_ga_phi, ub_ga_theta))  # upper bound of genes representing gamm, Sk
 
     gene_space = []
     for i in np.arange(len(lb_ga)):
@@ -117,7 +117,7 @@ while num_oscillators < total_num_oscillators:
     ga_solution, ga_solution_fitness, ga_solution_idx = ga_instance.best_solution()
     #     ga_instance.plot_fitness()
 
-    rfit_ga, n1_ga, k1_ga, n2_ga, k2_ga = calculate_rnk(ga_solution, v, viewing_angle)
+    rfit_ga, n1_ga, k1_ga, n2_ga, k2_ga = calculate_rnk(ga_solution, p, viewing_angle)
 
     #     fig, ax = plt.subplots(1,4, figsize=(15, 3))
     #     ax[0].plot(v,n_ga,'r', label='n_ga')
@@ -167,7 +167,7 @@ while num_oscillators < total_num_oscillators:
 
     ga_oscillation_parameters = np.copy(ga_solution)
 
-    N = int((len(ga_oscillation_parameters) - 1) / 3)
+    N = int((len(ga_oscillation_parameters) - 4) / 5)
 
     nu = ga_oscillation_parameters[0:N]
     gamm = ga_oscillation_parameters[N:2 * N]
@@ -187,13 +187,13 @@ while num_oscillators < total_num_oscillators:
     # Set lower and upper bounds
     lb_nu = -20. + nu
     ub_nu = 20. + nu
-    lb_gamm = np.zeros((0, len(nu)))
+    lb_gamm = np.tile(0, (1, len(nu)))
     ub_gamm = np.tile(100, (1, len(nu)))
-    lb_Sk = np.zeros((1000, len(nu)))
+    lb_Sk = np.tile(1000, (1, len(nu)))
     ub_Sk = np.tile(1000000, (1, len(nu)))
-    lb_phi = np.zeros((-180, len(nu)))
+    lb_phi = np.tile(-180, (1, len(nu)))
     ub_phi = np.tile(180, (1, len(nu)))
-    lb_theta = np.zeros((89, len(nu)))
+    lb_theta = np.tile(89, (1, len(nu)))
     ub_theta = np.tile(91, (1, len(nu)))
 
     lb = np.hstack((lb_nu, lb_gamm.flatten(), lb_Sk.flatten(), lb_phi.flatten(), lb_theta.flatten(), 0, 0, 0, 0))
@@ -202,14 +202,14 @@ while num_oscillators < total_num_oscillators:
     ga_oscillators_final, lsq_cov = curve_fit(func_lsq_R, xdata=v, p0=ga_oscillators_initial, ydata=r, bounds=(lb, ub),
                                               maxfev=10000)
 
-    rfit_lsq, n1_lsq, k1_lsq, n2_lsq, k2_lsq = calculate_rnk(ga_oscillators_final, v, viewing_angle)
+    rfit_lsq, n1_lsq, k1_lsq, n2_lsq, k2_lsq = calculate_rnk(ga_oscillators_final, p, viewing_angle)
 
-    N = int((len(ga_oscillators_final) - 1) / 3)
+    # N = int((len(ga_oscillators_final) - 1) / 3)
 
-    nu = ga_oscillators_final[0:N]
-    gamm = ga_oscillators_final[N:N + N]
-    fourpr = ga_oscillators_final[N + N:N + N + N]
-    epsil = ga_oscillators_final[N + N + N]
+    # nu = ga_oscillators_final[0:N]
+    # gamm = ga_oscillators_final[N:N + N]
+    # fourpr = ga_oscillators_final[N + N:N + N + N]
+    # epsil = ga_oscillators_final[N + N + N]
 
     fig, ax = plt.subplots(6, 1, figsize=(5, 15))
     ax[0].plot(v, n1_ga, '.', 'g', label='n1_ga')

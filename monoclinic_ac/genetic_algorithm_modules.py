@@ -11,7 +11,7 @@ def fitness_func(solution, solution_idx):
 
 
 def chisq(modelled, measured):
-    return np.round(np.sum(np.square(modelled - measured) / measured), 3)
+    return (np.round(np.sum(np.square(modelled - measured) / measured), 3))
 
 
 def ga_optical_constants(gene_space):
@@ -37,7 +37,7 @@ def ga_optical_constants(gene_space):
             osci_diff = np.ediff1d(ga_instance.population[fs, :oscillators_num])
 
             if parent_num < num_parents:
-                if np.all(np.abs(osci_diff) > 5):
+                if np.all(np.abs(osci_diff) > 10):
                     parents[parent_num, :] = ga_instance.population[fs, :].copy()
                     parent_num += 1
             else:
@@ -45,9 +45,13 @@ def ga_optical_constants(gene_space):
 
         return parents, fitness_sorted[:num_parents]
 
-    num_generations = 10000
-    sol_per_pop = 100
-    num_parents_mating = 10
+    # num_generations = 10000
+    # sol_per_pop = 100
+    # num_parents_mating = 10
+    #
+    num_generations = 10
+    sol_per_pop = 3
+    num_parents_mating = 2
     crossover_probability = 0.15
     mutation_percent_genes = (3, 2)
 

@@ -52,16 +52,16 @@ def fresnel_ac(e_xx, e_xy, e_yy, e_zz, alpha):
          np.concatenate(((np.power(gamm1, 3) - gamm1) * (e_xx - np.square(k_y)), zeds,
                          (np.power(gamm3, 3) - gamm3) * (e_xx - np.square(k_y)), zeds), axis=1)), axis=0)
 
-    M = np.empty([4, 4, np.shape(d_1)[2]])
+    M = np.empty([4, 4, np.shape(d_1)[2]], dtype="complex")
 
     for i in np.arange(np.shape(d_1)[2]):
         M[:, :, i] = d_0_inv[:, :, i] * d_1[:, :, i]
 
     # calculate reflectance coefficients
     denom = (M[0, 0, :] * M[2, 2, :]) - (M[0, 2, :] * M[2, 0, :])
-    r_xx = ((M[1, 0, :] * M[2, 2, :]) - (M[1, 2, :] * M[2, 0, :])) / denom
+    r_xx = np.divide((M[1, 0, :] * M[2, 2, :]) - (M[1, 2, :] * M[2, 0, :]), denom)
     # r_xx = np.reshape(r_xx, (np.shape(r_xx)[2], 1))
-    r_xy = ((M[3, 0, :] * M[2, 2, :]) - (M[3, 2, :] * M[2, 0, :])) / denom
+    r_xy = np.divide((M[3, 0, :] * M[2, 2, :]) - (M[3, 2, :] * M[2, 0, :]), denom)
     # r_xy = np.reshape(r_xy, (np.shape(r_xy)[2], 1))
 
     # calculate reflectance
@@ -83,7 +83,9 @@ def dispersion_model_ac(nu, gamm, Sk, phi, theta, epsilxx, epsilxy, epsilyy, eps
 
     v = p[:, 0]
     omega = p[:, 1]
-    #     v = v[:,None]     # make v be Mx1
+
+    v = v.reshape(-1,1) # make v be Mx1
+    omega = omega.reshape(-1,1)  #make omega be Mx1
 
     # make nu, Sk, gamm be 1xN
     nu = nu[:, None].T
@@ -92,8 +94,8 @@ def dispersion_model_ac(nu, gamm, Sk, phi, theta, epsilxx, epsilxy, epsilyy, eps
     phi = phi[:, None].T
     theta = theta[:, None].T
 
-    v = np.tile(v, (1, len(nu)))
-    omega = np.tile(omega, (1, len(nu)))
+    v = np.tile(v, (1, np.shape(nu)[1]))
+    omega = np.tile(omega, (1, np.shape(nu)[1]))
     phi = np.tile(phi, (len(v), 1))
     theta = np.tile(theta, (len(v), 1))
     nu = np.tile(nu, (len(v), 1))
@@ -120,27 +122,27 @@ def dispersion_model_ac(nu, gamm, Sk, phi, theta, epsilxx, epsilxy, epsilyy, eps
     e_33 = epsilzz + np.sum(L_k_zz, axis=1)
 
     # rotate dielectric tensor to match coordinate system
-    e_xx = (e_11 * np.square(cosd(omega))) + (e_22 * np.square(sind(omega))) + (2 * e_12 * cosd(omega) * sind(omega))
-    e_xy = (e_12 * np.square(cosd(omega))) - (e_12 * np.square(sind(omega))) + (
-            (e_22 - e_11) * cosd(omega) * sind(omega))
-    e_yy = (e_22 * np.square(cosd(omega))) + (e_11 * np.square(sind(omega))) + (2 * e_12 * cosd(omega) * sind(omega))
+    e_xx = (e_11 * np.square(cosd(omega[:,0]))) + (e_22 * np.square(sind(omega[:,0]))) + (2 * e_12 * cosd(omega[:,0]) * sind(omega[:,0]))
+    e_xy = (e_12 * np.square(cosd(omega[:,0]))) - (e_12 * np.square(sind(omega[:,0]))) + (
+            (e_22 - e_11) * cosd(omega[:,0]) * sind(omega[:,0]))
+    e_yy = (e_22 * np.square(cosd(omega[:,0]))) + (e_11 * np.square(sind(omega[:,0]))) + (2 * e_12 * cosd(omega[:,0]) * sind(omega[:,0]))
     e_zz = e_33
 
-    e_xx = e_xx[0]
-    e_xy = e_xy[0]
-    e_yy = e_yy[0]
-    e_zz = e_zz
+    # e_xx = e_xx[0]
+    # e_xy = e_xy[0]
+    # e_yy = e_yy[0]
+    # e_zz = e_zz
 
     # calculate optical constants
-    m1sq = np.zeros((len(v), 1))
-    m2sq = np.zeros((len(v), 1))
-    m1sq[0] = (e_xx[0] + e_yy[0]) / 2 + np.sqrt((np.square(e_xx[0] - e_yy[0])) / 4 + np.square(e_xy[0]))
-    m2sq[0] = (e_xx[0] + e_yy[0]) / 2 - np.sqrt((np.square(e_xx[0] - e_yy[0])) / 4 + np.square(e_xy[0]))
+    m1sq = np.zeros((len(v), 1), dtype="complex")
+    m2sq = np.zeros((len(v), 1), dtype="complex")
+    m1sq[0] = (e_xx[0] + e_yy[0])/2 + np.sqrt((np.square(e_xx[0] - e_yy[0]))/4 + np.square(e_xy[0]))
+    m2sq[0] = (e_xx[0] + e_yy[0])/2 - np.sqrt((np.square(e_xx[0] - e_yy[0]))/4 + np.square(e_xy[0]))
 
     # enforce continuity
     for i in np.arange(1, len(v)):
-        sl1 = (e_xx[i] + e_yy[i]) / 2 + np.sqrt((np.square(e_xx[i] - e_yy[i])) / 4 + np.square(e_xy[i]))
-        sl2 = (e_xx[i] + e_yy[i]) / 2 - np.sqrt((np.square(e_xx[i] - e_yy[0])) / 4 + np.square(e_xy[i]))
+        sl1 = (e_xx[i] + e_yy[i])/2 + np.sqrt((np.square(e_xx[i] - e_yy[i]))/4 + np.square(e_xy[i]))
+        sl2 = (e_xx[i] + e_yy[i])/2 - np.sqrt((np.square(e_xx[i] - e_yy[i]))/4 + np.square(e_xy[i]))
 
         if np.abs(sl1 - m1sq[i - 1]) < (abs(sl2 - m2sq[i - 1])):
             m1sq[i] = sl1
