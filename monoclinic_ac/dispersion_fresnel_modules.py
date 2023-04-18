@@ -1,8 +1,7 @@
-# function 1: fresnel model for non-normal incidence
+# fresnel_ac: fresnel model for non-normal incidence
 # function 2: dispersion_model
 # function 3: calculate r, n, k using fresnel and dispersion
 import numpy as np
-
 
 def sind(deg):
     return np.sin(deg * (np.pi / 180))
@@ -61,9 +60,9 @@ def fresnel_ac(e_xx, e_xy, e_yy, e_zz, alpha):
     # calculate reflectance coefficients
     denom = (M[0, 0, :] * M[2, 2, :]) - (M[0, 2, :] * M[2, 0, :])
     r_xx = ((M[1, 0, :] * M[2, 2, :]) - (M[1, 2, :] * M[2, 0, :])) / denom
-    r_xx = np.reshape(r_xx, (np.shape(r_xx)[2], 1))
+    # r_xx = np.reshape(r_xx, (np.shape(r_xx)[2], 1))
     r_xy = ((M[3, 0, :] * M[2, 2, :]) - (M[3, 2, :] * M[2, 0, :])) / denom
-    r_xy = np.reshape(r_xy, (np.shape(r_xy)[2], 1))
+    # r_xy = np.reshape(r_xy, (np.shape(r_xy)[2], 1))
 
     # calculate reflectance
     R = np.square(np.abs(r_xx)) + np.square(np.abs(r_xy))
@@ -108,7 +107,7 @@ def dispersion_model_ac(nu, gamm, Sk, phi, theta, epsilxx, epsilxy, epsilyy, eps
     uyy = np.square(sind(theta)) * np.square(sind(phi))
     uzz = np.square(cosd(theta))
 
-    denom = np.square(nu) - np.square(v) - (np.sqrt(-1) * gamm * v)
+    denom = np.square(nu) - np.square(v) - (1j * gamm * v)
 
     L_k_xx = np.divide((uxx * Sk), denom)
     L_k_xy = np.divide((uxy * Sk), denom)

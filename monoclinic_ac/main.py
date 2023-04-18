@@ -1,10 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
-from genetic_algorithm_modules import ga_optical_constants
-from dispersion_fresnel_modules import calculate_rnk
 import shutil
 import os
+from genetic_algorithm_modules import ga_optical_constants
+from dispersion_fresnel_modules import calculate_rnk
+from input_data import r, v, viewing_angle
 
 
 def count(sett, rangee):
