@@ -5,9 +5,17 @@ import shutil
 import os
 from genetic_algorithm_modules import ga_optical_constants, chisq, func_lsq_R
 from dispersion_fresnel_modules import calculate_rnk
-from input_data import r, v, p, viewing_angle
+from input_data import r, v, p, viewing_angle, v1, r_omega1, r_omega2, r_omega3, r_omega4
 
-spectra_range = {'R1': range(32), 'R2': range(32,81), 'R3':range(81, 116), 'R4':range(116, 210), 'R5':range(210, 359), 'R6':range(359, 405),  'R7': range(405, len(v))}
+import matplotlib as mpl
+mpl.rcParams['font.family'] = 'Avenir'
+plt.rcParams['font.size'] = 18
+plt.rcParams['axes.linewidth'] = 2
+
+
+L = len(v1)
+
+spectra_range = {'R1': range(32), 'R2': range(32,81), 'R3':range(81, 116), 'R4':range(116, 210), 'R5':range(210, 359), 'R6':range(359, 405),  'R7': range(405, len(v1))}
 
 def count(sett, rangee):
     c = 0
@@ -15,6 +23,21 @@ def count(sett, rangee):
         if rangee[0] < val < rangee[-1]:
             c += 1
     return c
+
+def chisq_val_Rn(rfit, Rn):
+    rfit_omega1 = rfit[:L]
+    rfit_omega2 = rfit[L:2*L]
+    rfit_omega3 = rfit[2*L:3*L]
+    rfit_omega4 = rfit[3*L:4*L]
+
+    chisq_v = (chisq(rfit_omega1[spectra_range[Rn]], r_omega1[spectra_range[Rn]]) +
+                   chisq(rfit_omega2[spectra_range[Rn]], r_omega2[spectra_range[Rn]]) +
+                   chisq(rfit_omega3[spectra_range[Rn]], r_omega3[spectra_range[Rn]]) +
+                   chisq(rfit_omega4[spectra_range[Rn]], r_omega4[spectra_range[Rn]]))/4
+
+    return chisq_v
+
+
 
 # folder for saving the results for monoclinic solution ac
 
@@ -54,34 +77,35 @@ while num_oscillators < total_num_oscillators:
             lb_ga_nu = np.append(lb_ga_nu, 420)
             ub_ga_nu = np.append(ub_ga_nu, 1300)
 
-        #         if chisq_val_R1 >= 0.03:
-    #             lb_ga_nu = np.append(lb_ga_nu, v[spectra_range['R1']][0]+10)
-    #             ub_ga_nu = np.append(ub_ga_nu, v[spectra_range['R1']][-1]-10)
+            if chisq_val_R1 >= 0.03:
+                if count(ga_solution[:num_oscillators], v1[spectra_range['R1']]) < max_num_oscillators_R1:
+                    lb_ga_nu = np.append(lb_ga_nu, v1[spectra_range['R1']][0]+10)
+                    ub_ga_nu = np.append(ub_ga_nu, v1[spectra_range['R1']][-1]-10)
 
-    #         if chisq_val_R2 >= 0.001:
-    #             if count(ga_solution[:num_oscillators], v[spectra_range['R2']]) < max_num_oscillators_R2:
-    #                 lb_ga_nu = np.append(lb_ga_nu, v[spectra_range['R2']][0]+10)
-    #                 ub_ga_nu = np.append(ub_ga_nu, v[spectra_range['R2']][-1]-10)
+            if chisq_val_R2 >= 0.03:
+                if count(ga_solution[:num_oscillators], v1[spectra_range['R2']]) < max_num_oscillators_R2:
+                    lb_ga_nu = np.append(lb_ga_nu, v1[spectra_range['R2']][0]+10)
+                    ub_ga_nu = np.append(ub_ga_nu, v1[spectra_range['R2']][-1]-10)
 
-    #         if chisq_val_R3 >= 0.001:
-    #             if count(ga_solution[:num_oscillators], v[spectra_range['R3']]) < max_num_oscillators_R3:
-    #                 lb_ga_nu = np.append(lb_ga_nu, v[spectra_range['R3']][0]+10)
-    #                 ub_ga_nu = np.append(ub_ga_nu, v[spectra_range['R3']][-1]-10)
+            if chisq_val_R3 >= 0.03:
+                if count(ga_solution[:num_oscillators], v1[spectra_range['R3']]) < max_num_oscillators_R3:
+                    lb_ga_nu = np.append(lb_ga_nu, v1[spectra_range['R3']][0]+10)
+                    ub_ga_nu = np.append(ub_ga_nu, v1[spectra_range['R3']][-1]-10)
 
-    #         if chisq_val_R4 >= 0.001:
-    #             if count(ga_solution[:num_oscillators], v[spectra_range['R4']]) < max_num_oscillators_R4:
-    #                 lb_ga_nu = np.append(lb_ga_nu, v[spectra_range['R4']][0]+10)
-    #                 ub_ga_nu = np.append(ub_ga_nu, v[spectra_range['R4']][-1]-10)
+            if chisq_val_R4 >= 0.03:
+                if count(ga_solution[:num_oscillators], v1[spectra_range['R4']]) < max_num_oscillators_R4:
+                    lb_ga_nu = np.append(lb_ga_nu, v1[spectra_range['R4']][0]+10)
+                    ub_ga_nu = np.append(ub_ga_nu, v1[spectra_range['R4']][-1]-10)
 
-    #         if chisq_val_R5 >= 0.001:
-    #             if count(ga_solution[:num_oscillators], v[spectra_range['R5']]) < max_num_oscillators_R5:
-    #                 lb_ga_nu = np.append(lb_ga_nu, v[spectra_range['R5']][0]+10)
-    #                 ub_ga_nu = np.append(ub_ga_nu, v[spectra_range['R5']][-1]-10)
+            if chisq_val_R5 >= 0.03:
+                if count(ga_solution[:num_oscillators], v1[spectra_range['R5']]) < max_num_oscillators_R5:
+                    lb_ga_nu = np.append(lb_ga_nu, v1[spectra_range['R5']][0]+10)
+                    ub_ga_nu = np.append(ub_ga_nu, v1[spectra_range['R5']][-1]-10)
 
-    #         if chisq_val_R6 >= 0.001:
-    #             if count(ga_solution[:num_oscillators], v[spectra_range['R6']]) < max_num_oscillators_R6:
-    #                 lb_ga_nu = np.append(lb_ga_nu, v[spectra_range['R6']][0]+10)
-    #                 ub_ga_nu = np.append(ub_ga_nu, v[spectra_range['R6']][-1]-10)
+            if chisq_val_R6 >= 0.03:
+                if count(ga_solution[:num_oscillators], v1[spectra_range['R6']]) < max_num_oscillators_R6:
+                    lb_ga_nu = np.append(lb_ga_nu, v1[spectra_range['R6']][0]+10)
+                    ub_ga_nu = np.append(ub_ga_nu, v1[spectra_range['R6']][-1]-10)
 
     num_oscillators = len(lb_ga_nu)
 
@@ -119,7 +143,6 @@ while num_oscillators < total_num_oscillators:
 
     rfit_ga, n1_ga, k1_ga, n2_ga, k2_ga = calculate_rnk(ga_solution, p, viewing_angle)
 
-
     # print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=ga_solution_fitness))
 
     if ga_instance.best_solution_generation != -1:
@@ -130,13 +153,26 @@ while num_oscillators < total_num_oscillators:
     ga_chisq["overall_chisq"] = chisq(rfit_ga, r)
     print("Chi-square goodness of overall fitness is ", chisq(rfit_ga, r))
 
-    #     ga_chisq["chisq_val_R1"] = chisq(R_ga[spectra_range['R1']], R_smoothed[spectra_range['R1']])
-    #     ga_chisq["chisq_val_R2"] = chisq(R_ga[spectra_range['R2']], R_smoothed[spectra_range['R2']])
-    #     ga_chisq["chisq_val_R3"] = chisq(R_ga[spectra_range['R3']], R_smoothed[spectra_range['R3']])
-    #     ga_chisq["chisq_val_R4"] = chisq(R_ga[spectra_range['R4']], R_smoothed[spectra_range['R4']])
-    #     ga_chisq["chisq_val_R5"] = chisq(R_ga[spectra_range['R5']], R_smoothed[spectra_range['R5']])
-    #     ga_chisq["chisq_val_R6"] = chisq(R_ga[spectra_range['R6']], R_smoothed[spectra_range['R6']])
-    #     ga_chisq["chisq_val_R7"] = chisq(R_ga[spectra_range['R7']], R_smoothed[spectra_range['R7']])
+    chisq_val_R1 = chisq_val_Rn(rfit_ga,'R1')
+    chisq_val_R2 = chisq_val_Rn(rfit_ga, 'R2')
+    chisq_val_R3 = chisq_val_Rn(rfit_ga, 'R3')
+    chisq_val_R4 = chisq_val_Rn(rfit_ga, 'R4')
+    chisq_val_R5 = chisq_val_Rn(rfit_ga, 'R5')
+    chisq_val_R6 = chisq_val_Rn(rfit_ga, 'R6')
+    chisq_val_R7 = chisq_val_Rn(rfit_ga, 'R7')
+
+    n1_ga = n1_ga[:L]
+    n2_ga = n2_ga[:L]
+    k1_ga = k1_ga[:L]
+    k2_ga = k2_ga[:L]
+
+    # ga_chisq["chisq_val_R1"] = chisq(R_ga[spectra_range['R1']], R_smoothed[spectra_range['R1']])
+        # ga_chisq["chisq_val_R2"] = chisq(R_ga[spectra_range['R2']], R_smoothed[spectra_range['R2']])
+        # ga_chisq["chisq_val_R3"] = chisq(R_ga[spectra_range['R3']], R_smoothed[spectra_range['R3']])
+        # ga_chisq["chisq_val_R4"] = chisq(R_ga[spectra_range['R4']], R_smoothed[spectra_range['R4']])
+        # ga_chisq["chisq_val_R5"] = chisq(R_ga[spectra_range['R5']], R_smoothed[spectra_range['R5']])
+        # ga_chisq["chisq_val_R6"] = chisq(R_ga[spectra_range['R6']], R_smoothed[spectra_range['R6']])
+        # ga_chisq["chisq_val_R7"] = chisq(R_ga[spectra_range['R7']], R_smoothed[spectra_range['R7']])
 
     #     np.savetxt(lf+'/run%s_%s_NumOfOscillators_ga_best_solution_fitness_per_generation.txt'%(run, num_oscillators), ga_instance.best_solutions_fitness)
     #     fname = lf+"ga_run"+str(run)+"_Noscillators"+str(num_oscillators)
@@ -185,6 +221,20 @@ while num_oscillators < total_num_oscillators:
 
     rfit_lsq, n1_lsq, k1_lsq, n2_lsq, k2_lsq = calculate_rnk(ga_oscillators_final, p, viewing_angle)
 
+    chisq_val_R1 = chisq_val_Rn(rfit_lsq, 'R1')
+    chisq_val_R2 = chisq_val_Rn(rfit_lsq, 'R2')
+    chisq_val_R3 = chisq_val_Rn(rfit_lsq, 'R3')
+    chisq_val_R4 = chisq_val_Rn(rfit_lsq, 'R4')
+    chisq_val_R5 = chisq_val_Rn(rfit_lsq, 'R5')
+    chisq_val_R6 = chisq_val_Rn(rfit_lsq, 'R6')
+    chisq_val_R7 = chisq_val_Rn(rfit_lsq, 'R7')
+
+    n1_lsq = n1_lsq[:L]
+    n2_lsq = n2_lsq[:L]
+    k1_lsq = k1_lsq[:L]
+    k2_lsq = k2_lsq[:L]
+
+
     # N = int((len(ga_oscillators_final) - 1) / 3)
 
     # nu = ga_oscillators_final[0:N]
@@ -192,37 +242,91 @@ while num_oscillators < total_num_oscillators:
     # fourpr = ga_oscillators_final[N + N:N + N + N]
     # epsil = ga_oscillators_final[N + N + N]
 
-    fig, ax = plt.subplots(6, 1, figsize=(5, 15))
-    ax[0].plot(v, n1_ga, '.', 'g', label='n1_ga')
-    ax[0].plot(v, n1_lsq, '.', 'b', label='n1_ga+lsq')
+    fig, ax = plt.subplots(2, 1, figsize=(8, 10))
+    ax[0].plot(v1, n1_ga,  'g', label='n1_ga')
+    ax[0].plot(v1, n1_lsq, 'b', label='n1_ga+lsq')
     ax[0].legend(bbox_to_anchor=(1, 1))
     ax[0].set_title('GA+LSQ modelled n1')
 
-    ax[1].plot(v, n2_ga, '.', 'g', label='n2_ga')
-    ax[1].plot(v, n2_lsq, '.', 'b', label='n2_ga+lsq')
+    ax[1].plot(v1, n2_ga, 'g', label='n2_ga')
+    ax[1].plot(v1, n2_lsq, 'b', label='n2_ga+lsq')
     ax[1].legend(bbox_to_anchor=(1, 1))
     ax[1].set_title('GA+LSQ modelled n2')
+    plt.legend()
+    plt.show()
 
-    ax[2].plot(v, k1_ga, '.', 'g', label='k_ga')
-    ax[2].plot(v, k1_lsq, '.', 'b', label='k_ga+lsq')
+    fig, ax = plt.subplots(2, 1, figsize=(8, 10))
+    ax[0].plot(v1, k1_ga, 'g', label='k1_ga')
+    ax[0].plot(v1, k1_lsq, 'b', label='k1_ga+lsq')
+    ax[0].legend(bbox_to_anchor=(1, 1))
+    ax[0].set_title('GA+LSQ modelled k1')
+
+    ax[1].plot(v1, k2_ga, 'g', label='k2_ga')
+    ax[1].plot(v1, k2_lsq, 'b', label='k2_ga+lsq')
+    ax[1].legend(bbox_to_anchor=(1, 1))
+    ax[1].set_title('GA+LSQ modelled k2')
+    plt.legend()
+    plt.show()
+
+    rfit_ga_omega1 = rfit_ga[:L]
+    rfit_ga_omega2 = rfit_ga[L:2*L]
+    rfit_ga_omega3 = rfit_ga[2*L:3*L]
+    rfit_ga_omega4 = rfit_ga[3*L:4*L]
+
+    rfit_lsq_omega1 = rfit_lsq[:L]
+    rfit_lsq_omega2 = rfit_lsq[L:2*L]
+    rfit_lsq_omega3 = rfit_lsq[2*L:3*L]
+    rfit_lsq_omega4 = rfit_lsq[3*L:4*L]
+
+
+
+    fig, ax = plt.subplots(4, 1, figsize=(17, 15))
+
+    ax[0].plot(v1, rfit_lsq_omega1, 'b', label='R_ga+lsq')
+    ax[0].plot(v1, rfit_ga_omega1, 'r', label='R_ga')
+    ax[0].plot(v1, r_omega1, 'k', label='R')
+    ax[0].legend(bbox_to_anchor=(1, 1))
+    ax[0].set_title('GA+LSQ modelled R 0 deg')
+
+    ax[1].plot(v1, rfit_lsq_omega2, 'b', label='R_ga+lsq')
+    ax[1].plot(v1, rfit_ga_omega2, 'r', label='R_ga')
+    ax[1].plot(v1, r_omega2, 'k', label='R')
+    ax[1].legend(bbox_to_anchor=(1, 1))
+    ax[1].set_title('GA+LSQ modelled R 45 deg')
+
+    ax[2].plot(v1, rfit_lsq_omega3, 'b', label='R_ga+lsq')
+    ax[2].plot(v1, rfit_ga_omega3, 'r', label='R_ga')
+    ax[2].plot(v1, r_omega3, 'k', label='R')
     ax[2].legend(bbox_to_anchor=(1, 1))
-    ax[2].set_title('GA+LSQ modelled k1')
+    ax[2].set_title('GA+LSQ modelled R 90 deg')
 
-    ax[3].plot(v, k2_ga, '.', 'g', label='k2_ga')
-    ax[3].plot(v, k2_lsq, '.', 'b', label='k2_ga+lsq')
+    ax[3].plot(v1, rfit_lsq_omega4, 'b', label='R_ga+lsq')
+    ax[3].plot(v1, rfit_ga_omega4, 'r', label='R_ga')
+    ax[3].plot(v1, r_omega3, 'k', label='R')
     ax[3].legend(bbox_to_anchor=(1, 1))
-    ax[3].set_title('GA+LSQ modelled k2')
+    ax[3].set_title('GA+LSQ modelled R 135 deg')
+    plt.legend()
+    plt.show()
 
-    ax[2].plot(v, rfit_lsq, '.', 'b', label='R_ga+lsq')
-    ax[2].plot(v, rfit_ga, '.', 'b', label='R_ga')
-    ax[2].plot(v, r, '.', 'k', label='R')
-    ax[2].legend(bbox_to_anchor=(1, 1))
-    ax[2].set_title('GA+LSQ modelled R')
+    fig, ax = plt.subplots(4, 1, figsize=(17, 15))
+    ax[0].plot(v1, r_omega1 - rfit_lsq_omega1, 'k')
+    ax[0].set_title('GA+LSQ modelled R 0 deg')
+    ax[0].set_ylim(-0.05, +0.05)
 
-    ax[3].plot(v, r - rfit_lsq,'.', label='residual R')
+    ax[1].plot(v1, r_omega2 - rfit_lsq_omega2, 'k')
+    ax[1].set_title('GA+LSQ modelled R 45 deg')
+    ax[1].set_ylim(-0.05, +0.05)
+
+    ax[2].plot(v1, r_omega2 - rfit_lsq_omega2, 'k')
+    ax[2].set_title('GA+LSQ modelled R 90 deg')
+    ax[2].set_ylim(-0.05, +0.05)
+
+    ax[3].plot(v1, r_omega2 - rfit_lsq_omega2, 'k')
+    ax[3].set_title('GA+LSQ modelled R 135 deg')
     ax[3].set_ylim(-0.05, +0.05)
     plt.legend()
     plt.show()
+
 
     ga_lsq_chisq = {}
 
@@ -250,16 +354,18 @@ while num_oscillators < total_num_oscillators:
 
     fig, ax2 = plt.subplots(1, 2, figsize=(10, 3))
 
-    ax2[0].plot(v, r)
+    ax2[0].plot(v1, r_omega1)
     for i in ga_solution[:num_oscillators]:
-        ax2[0].scatter(i, r[np.abs(v - i).argmin()], label=round(i, 3), color='r')
-    ax2[0].legend()
+        ax2[0].scatter(i, r_omega1[np.abs(v1 - i).argmin()], color='r')
+        # ax2[0].scatter(i, r_omega1[np.abs(v1 - i).argmin()], label=round(i, 3), color='r')
+    # ax2[0].legend()
     ax2[0].set_title("GA oscillators")
 
-    ax2[1].plot(v, r)
+    ax2[1].plot(v1, r_omega1)
     for i in ga_oscillators_final[:num_oscillators]:
-        ax2[1].scatter(i, r[np.abs(v - i).argmin()], label=round(i, 3), color='r')
-    ax2[1].legend()
+        ax2[1].scatter(i, r_omega1[np.abs(v1 - i).argmin()], color='r')
+        # ax2[1].scatter(i, r_omega1[np.abs(v1 - i).argmin()], label=round(i, 3), color='r')
+    # ax2[1].legend()
     ax2[1].set_title("GA+LSQ oscillators")
     plt.show()
 
