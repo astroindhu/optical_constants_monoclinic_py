@@ -128,11 +128,6 @@ def dispersion_model_ac(nu, gamm, Sk, phi, theta, epsilxx, epsilxy, epsilyy, eps
     e_yy = (e_22 * np.square(cosd(omega[:,0]))) + (e_11 * np.square(sind(omega[:,0]))) + (2 * e_12 * cosd(omega[:,0]) * sind(omega[:,0]))
     e_zz = e_33
 
-    # e_xx = e_xx[0]
-    # e_xy = e_xy[0]
-    # e_yy = e_yy[0]
-    # e_zz = e_zz
-
     # calculate optical constants
     m1sq = np.zeros((len(v), 1), dtype="complex")
     m2sq = np.zeros((len(v), 1), dtype="complex")
@@ -144,7 +139,7 @@ def dispersion_model_ac(nu, gamm, Sk, phi, theta, epsilxx, epsilxy, epsilyy, eps
         sl1 = (e_xx[i] + e_yy[i])/2 + np.sqrt((np.square(e_xx[i] - e_yy[i]))/4 + np.square(e_xy[i]))
         sl2 = (e_xx[i] + e_yy[i])/2 - np.sqrt((np.square(e_xx[i] - e_yy[i]))/4 + np.square(e_xy[i]))
 
-        if np.abs(sl1 - m1sq[i - 1]) < (abs(sl1 - m2sq[i - 1])):
+        if np.abs(sl1 - m1sq[i - 1]) < (np.abs(sl1 - m2sq[i - 1])):
             m1sq[i] = sl1
             m2sq[i] = sl2
         else:
@@ -158,7 +153,7 @@ def dispersion_model_ac(nu, gamm, Sk, phi, theta, epsilxx, epsilxy, epsilyy, eps
     n2 = np.real(m2)
     k2 = np.imag(m2)
 
-    return n1, k1, n2, k2, e_xx, e_xy, e_yy, e_zz
+    return n1, n2, k1, k2, e_xx, e_xy, e_yy, e_zz
 
 
 def calculate_rnk(coef, p, alpha):
