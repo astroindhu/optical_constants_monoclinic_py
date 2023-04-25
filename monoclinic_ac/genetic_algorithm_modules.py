@@ -27,7 +27,7 @@ def ga_optical_constants(gene_space):
         fitness_sorted.reverse()
         #         print("fitness sorted", fitness_sorted)
 
-        oscillators_num = int((ga_instance.population.shape[1] - 1) / 3)
+        oscillators_num = int((ga_instance.population.shape[1] - 4) / 5)
 
         parents = np.empty((num_parents, ga_instance.population.shape[1]))
 
@@ -49,8 +49,11 @@ def ga_optical_constants(gene_space):
     # sol_per_pop = 100
     # num_parents_mating = 10
     #
+    # num_generations = 1000
+    # sol_per_pop = 50
+    # num_parents_mating = 10
     num_generations = 10
-    sol_per_pop = 3
+    sol_per_pop = 5
     num_parents_mating = 2
     crossover_probability = 0.15
     mutation_percent_genes = (3, 2)
@@ -73,7 +76,7 @@ def ga_optical_constants(gene_space):
                                save_solutions=True,
                                suppress_warnings=True,
                                allow_duplicate_genes=False,
-                               stop_criteria="saturate_100",
+                               stop_criteria="saturate_20",
                                on_generation=on_generation_progress)
 
         ga_instance.run()

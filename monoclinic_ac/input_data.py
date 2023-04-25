@@ -1,6 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+import matplotlib as mpl
+mpl.rcParams['font.family'] = 'Avenir'
+plt.rcParams['font.size'] = 18
+plt.rcParams['axes.linewidth'] = 2
+
 path = "/Users/astroindhu/SBU/1_Optical_Constants/optical_constants_py/MIR_optical_constants_py/monoclinic_py/monoclinic_py/monoclinic_ac/lab_ac/"
 
 v1, r_omega1 = np.loadtxt(path+"Orth 0deg Wed Nov 09 12-36-20 2011 (GMT-05-00).CSV", unpack=True)
@@ -70,4 +75,5 @@ plt.plot(v4, r_omega4, label="135 deg")
 plt.xlabel('wavenumber (cm${^{-1}}$)')
 plt.ylabel("Reflectance")
 plt.legend()
+plt.tight_layout()
 plt.show()
