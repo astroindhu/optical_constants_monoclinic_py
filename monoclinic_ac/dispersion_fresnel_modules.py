@@ -123,8 +123,7 @@ def dispersion_model_ac(nu, gamm, Sk, phi, theta, epsilxx, epsilxy, epsilyy, eps
 
     # rotate dielectric tensor to match coordinate system
     e_xx = (e_11 * np.square(cosd(omega[:,0]))) + (e_22 * np.square(sind(omega[:,0]))) + (2 * e_12 * cosd(omega[:,0]) * sind(omega[:,0]))
-    e_xy = (e_12 * np.square(cosd(omega[:,0]))) - (e_12 * np.square(sind(omega[:,0]))) + (
-            (e_22 - e_11) * cosd(omega[:,0]) * sind(omega[:,0]))
+    e_xy = (e_12 * np.square(cosd(omega[:,0]))) - (e_12 * np.square(sind(omega[:,0]))) + ((e_22 - e_11) * cosd(omega[:,0]) * sind(omega[:,0]))
     e_yy = (e_22 * np.square(cosd(omega[:,0]))) + (e_11 * np.square(sind(omega[:,0]))) + (2 * e_12 * cosd(omega[:,0]) * sind(omega[:,0]))
     e_zz = e_33
 

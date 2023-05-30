@@ -37,7 +37,7 @@ def ga_optical_constants(gene_space):
             osci_diff = np.ediff1d(ga_instance.population[fs, :oscillators_num])
 
             if parent_num < num_parents:
-                if np.all(np.abs(osci_diff) > 5):
+                if np.all(np.abs(osci_diff) > 1):
                     parents[parent_num, :] = ga_instance.population[fs, :].copy()
                     parent_num += 1
             else:
@@ -55,8 +55,9 @@ def ga_optical_constants(gene_space):
     # num_generations = 10
     # sol_per_pop = 5
     # num_parents_mating = 2
+
     num_generations = 100
-    sol_per_pop = 20
+    sol_per_pop = 10
     num_parents_mating = 5
     crossover_probability = 0.15
     mutation_percent_genes = (3, 2)
