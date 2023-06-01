@@ -1,22 +1,15 @@
-This script derives optical constants for the a-c plane monoclinic crystals from oriened reflectance data. 
+This is a Genetic Algorithm driven model which uses the fresnal and dispersion model for modelling wavelength dependent mid-infrared optical constants of monoclinic silicates. 
 
-The functions called by the main script are:
-disp_model_wrap_ac.m  :Wrapper function needed to ease use of
-                            lsqcurvefit.
-                            
-dispersion_model_ac.m :Actual dispersion model called by the
-                            wrapper function. Outputs optical constants 
-                           (n,k). 
-                           
-fresnel_ac.m          :Fresnel equations for non-normal incidence. Calculates 
-                            reflectance from optical constants. Incidence
-                            angle set to 30 degrees. Edit this funcion to
-                            change that.
-                            
-isint.m                    :Short boolean function that gives 'Yes' if
-                            the input is an integer. 
+The manuscript regarding this work is currently under preparation for publication. The authors of this research include
 
-inputs: param_values.txt - oscillator parameter estimates
+Indhu Varatharajan, Department of Geosciences, Stony Brook University, Stony Brook, NY11794
 
- output: new_param_values.txt
-        optical_constants_ac.txt
+Elizabeth Sklute, Department of Astronomy, Mount Holyoke College, South Hadley, MA 01075, Planetary Science Institute, Tucson, AZ, 85719
+
+Timothy D. Glotch, Department of Geosciences, Stony Brook University, Stony Brook, NY11794
+
+M. Darby Dyar, Department of Astronomy, Mount Holyoke College, South Hadley, MA 01075
+
+This work was supported by NASA PDART grant 80NSSC21K0877 to E. C. Sklute and the RISE2 SSERVI cooperative agreement 80NSSC19M0215.
+
+If you have any questions regarding the algorithm, please write to indhu.varatharajan@stonybrook.edu.
