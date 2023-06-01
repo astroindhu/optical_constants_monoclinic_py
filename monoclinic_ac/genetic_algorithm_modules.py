@@ -11,7 +11,7 @@ def fitness_func(solution, solution_idx):
 
 
 def chisq(modelled, measured):
-    return (np.round(np.sum(np.square(modelled - measured) / measured), 3))
+    return np.round(np.sum(np.square(modelled - measured) / measured), 3)
 
 
 def ga_optical_constants(gene_space):

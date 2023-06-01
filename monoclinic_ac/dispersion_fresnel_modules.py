@@ -111,10 +111,10 @@ def dispersion_model_ac(nu, gamm, Sk, phi, theta, epsilxx, epsilxy, epsilyy, eps
 
     denom = np.square(nu) - np.square(v) - (1j * gamm * v)
 
-    L_k_xx = np.divide((uxx * Sk), denom)
-    L_k_xy = np.divide((uxy * Sk), denom)
-    L_k_yy = np.divide((uyy * Sk), denom)
-    L_k_zz = np.divide((uzz * Sk), denom)
+    L_k_xx = np.divide((uxx * Sk * Sk), denom)
+    L_k_xy = np.divide((uxy * Sk * Sk), denom)
+    L_k_yy = np.divide((uyy * Sk * Sk), denom)
+    L_k_zz = np.divide((uzz * Sk * Sk), denom)
 
     e_11 = epsilxx + np.sum(L_k_xx, axis=1)
     e_12 = epsilxy + np.sum(L_k_xy, axis=1)

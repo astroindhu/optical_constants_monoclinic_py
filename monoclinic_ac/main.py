@@ -57,10 +57,10 @@ max_num_oscillators_R3 = 2
 max_num_oscillators_R4 = 5
 max_num_oscillators_R5 = 5
 max_num_oscillators_R6 = 5
-max_num_oscillators_R7 = 2
+max_num_oscillators_R7 = 0
 
 num_oscillators = 2
-total_num_oscillators = max_num_oscillators_R1 + max_num_oscillators_R2 + max_num_oscillators_R3 + max_num_oscillators_R4 + max_num_oscillators_R5 + max_num_oscillators_R6
+total_num_oscillators = max_num_oscillators_R1 + max_num_oscillators_R2 + max_num_oscillators_R3 + max_num_oscillators_R4 + max_num_oscillators_R5 + max_num_oscillators_R6 + max_num_oscillators_R7
 run = 1
 
 while num_oscillators < total_num_oscillators:
@@ -74,37 +74,37 @@ while num_oscillators < total_num_oscillators:
 
 
         if chisq_val_R1 >= 0.03:
-            if count(ga_solution[:num_oscillators], v1[spectra_range['R1']]) < max_num_oscillators_R1:
+            if count(ga_solution[:num_oscillators], v1[spectra_range['R1']]) <= max_num_oscillators_R1:
                 lb_ga_nu = np.append(lb_ga_nu, v1[spectra_range['R1']][0]+10)
                 ub_ga_nu = np.append(ub_ga_nu, v1[spectra_range['R1']][-1]-10)
 
         if chisq_val_R2 >= 0.03:
-            if count(ga_solution[:num_oscillators], v1[spectra_range['R2']]) < max_num_oscillators_R2:
+            if count(ga_solution[:num_oscillators], v1[spectra_range['R2']]) <= max_num_oscillators_R2:
                 lb_ga_nu = np.append(lb_ga_nu, v1[spectra_range['R2']][0]+10)
                 ub_ga_nu = np.append(ub_ga_nu, v1[spectra_range['R2']][-1]-10)
 
         if chisq_val_R3 >= 0.03:
-            if count(ga_solution[:num_oscillators], v1[spectra_range['R3']]) < max_num_oscillators_R3:
+            if count(ga_solution[:num_oscillators], v1[spectra_range['R3']]) <= max_num_oscillators_R3:
                 lb_ga_nu = np.append(lb_ga_nu, v1[spectra_range['R3']][0]+10)
                 ub_ga_nu = np.append(ub_ga_nu, v1[spectra_range['R3']][-1]-10)
 
         if chisq_val_R4 >= 0.03:
-            if count(ga_solution[:num_oscillators], v1[spectra_range['R4']]) < max_num_oscillators_R4:
+            if count(ga_solution[:num_oscillators], v1[spectra_range['R4']]) <= max_num_oscillators_R4:
                 lb_ga_nu = np.append(lb_ga_nu, v1[spectra_range['R4']][0]+10)
                 ub_ga_nu = np.append(ub_ga_nu, v1[spectra_range['R4']][-1]-10)
 
         if chisq_val_R5 >= 0.03:
-            if count(ga_solution[:num_oscillators], v1[spectra_range['R5']]) < max_num_oscillators_R5:
+            if count(ga_solution[:num_oscillators], v1[spectra_range['R5']]) <= max_num_oscillators_R5:
                 lb_ga_nu = np.append(lb_ga_nu, v1[spectra_range['R5']][0]+10)
                 ub_ga_nu = np.append(ub_ga_nu, v1[spectra_range['R5']][-1]-10)
 
         if chisq_val_R6 >= 0.03:
-            if count(ga_solution[:num_oscillators], v1[spectra_range['R6']]) < max_num_oscillators_R6:
+            if count(ga_solution[:num_oscillators], v1[spectra_range['R6']]) <= max_num_oscillators_R6:
                 lb_ga_nu = np.append(lb_ga_nu, v1[spectra_range['R6']][0]+10)
                 ub_ga_nu = np.append(ub_ga_nu, v1[spectra_range['R6']][-1]-10)
 
         if chisq_val_R7 >= 0.03:
-            if count(ga_solution[:num_oscillators], v1[spectra_range['R7']]) < max_num_oscillators_R7:
+            if count(ga_solution[:num_oscillators], v1[spectra_range['R7']]) <= max_num_oscillators_R7:
                 lb_ga_nu = np.append(lb_ga_nu, v1[spectra_range['R7']][0] + 10)
                 ub_ga_nu = np.append(ub_ga_nu, v1[spectra_range['R7']][-1] - 10)
 
@@ -118,8 +118,8 @@ while num_oscillators < total_num_oscillators:
     lb_ga_gamm = np.repeat(0, num_oscillators)
     ub_ga_gamm = np.repeat(100, num_oscillators)
 
-    lb_ga_Sk = np.repeat(1000, num_oscillators)
-    ub_ga_Sk = np.repeat(1000000, num_oscillators)
+    lb_ga_Sk = np.repeat(0, num_oscillators)
+    ub_ga_Sk = np.repeat(1000, num_oscillators)
 
     lb_ga_phi = np.repeat(-180, num_oscillators)
     ub_ga_phi = np.repeat(180, num_oscillators)
@@ -159,25 +159,27 @@ while num_oscillators < total_num_oscillators:
     # print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=ga_solution_fitness))
 
     if ga_instance.best_solution_generation != -1:
-        print("Best fitness value reached after {best_solution_generation} generations.".format(
+        print("GA Best fitness value reached after {best_solution_generation} generations.".format(
             best_solution_generation=ga_instance.best_solution_generation))
 
-    ga_chisq = {}
-    ga_chisq["overall_chisq"] = chisq(rfit_ga, r)
-    print("Chi-square goodness of overall fitness is ", chisq(rfit_ga, r))
 
-    chisq_val_R1 = chisq_val_Rn(rfit_ga,'R1')
-    chisq_val_R2 = chisq_val_Rn(rfit_ga, 'R2')
-    chisq_val_R3 = chisq_val_Rn(rfit_ga, 'R3')
-    chisq_val_R4 = chisq_val_Rn(rfit_ga, 'R4')
-    chisq_val_R5 = chisq_val_Rn(rfit_ga, 'R5')
-    chisq_val_R6 = chisq_val_Rn(rfit_ga, 'R6')
-    chisq_val_R7 = chisq_val_Rn(rfit_ga, 'R7')
+    print("GA Chi-square goodness of overall fitness is ", chisq(rfit_ga, r))
 
-    n1_ga = n1_ga[:L]
-    n2_ga = n2_ga[:L]
-    k1_ga = k1_ga[:L]
-    k2_ga = k2_ga[:L]
+    print("GA solution:", ga_solution)
+
+    #
+    # chisq_val_R1 = chisq_val_Rn(rfit_ga,'R1')
+    # chisq_val_R2 = chisq_val_Rn(rfit_ga, 'R2')
+    # chisq_val_R3 = chisq_val_Rn(rfit_ga, 'R3')
+    # chisq_val_R4 = chisq_val_Rn(rfit_ga, 'R4')
+    # chisq_val_R5 = chisq_val_Rn(rfit_ga, 'R5')
+    # chisq_val_R6 = chisq_val_Rn(rfit_ga, 'R6')
+    # chisq_val_R7 = chisq_val_Rn(rfit_ga, 'R7')
+    #
+    # n1_ga = n1_ga[:L]
+    # n2_ga = n2_ga[:L]
+    # k1_ga = k1_ga[:L]
+    # k2_ga = k2_ga[:L]
 
 # start of LSQ routine
     ga_oscillation_parameters = np.copy(ga_solution)
@@ -200,16 +202,17 @@ while num_oscillators < total_num_oscillators:
     # fourpr=Sk./(nu.^2);
 
     # Set lower and upper bounds
-    lb_nu = -20. + nu
-    ub_nu = 20. + nu
+    lb_nu = -100. + nu
+    ub_nu = 100. + nu
     lb_gamm = np.tile(0, (1, len(nu)))
     ub_gamm = np.tile(100, (1, len(nu)))
-    lb_Sk = np.tile(1000, (1, len(nu)))
-    ub_Sk = np.tile(1000000, (1, len(nu)))
+    lb_Sk = np.tile(0, (1, len(nu)))
+    ub_Sk = np.tile(1000, (1, len(nu)))
     lb_phi = np.tile(-180, (1, len(nu)))
     ub_phi = np.tile(180, (1, len(nu)))
-    lb_theta = np.tile(89, (1, len(nu)))
-    ub_theta = np.tile(91, (1, len(nu)))
+    lb_theta = np.tile(89.99, (1, len(nu)))
+    ub_theta = np.tile(90.01, (1, len(nu)))
+
 
     lb = np.hstack((lb_nu, lb_gamm.flatten(), lb_Sk.flatten(), lb_phi.flatten(), lb_theta.flatten(), 0, 0, 0, 0))
     ub = np.hstack((ub_nu, ub_gamm.flatten(), ub_Sk.flatten(), ub_phi.flatten(), ub_theta.flatten(), 5, 5, 5, 5))
@@ -253,20 +256,20 @@ while num_oscillators < total_num_oscillators:
 
     fig, ax = plt.subplots(2, 1, figsize=(8, 10))
     # ax[0].plot(v1, n1_ga,  'g', label='n1_ga')
-    ax[0].plot(v1, n1_lsq, 'b', label='n1_ga+lsq')
-    ax[0].plot(v1, n2_lsq, 'b', label='n2_ga+lsq')
+    ax[0].plot(v1, n1_lsq, 'k', label='n1_ga+lsq')
+    ax[0].plot(v1, n2_lsq, 'r', label='n2_ga+lsq')
     ax[0].set_xlim(2000, 400)
     ax[0].legend(bbox_to_anchor=(1, 1))
     ax[0].set_title('GA+LSQ modelled n2')
 
-    ax[1].plot(v1, k1_lsq, 'b', label='k1_ga+lsq')
-    ax[1].plot(v1, k2_lsq, 'b', label='k2_ga+lsq')
+    ax[1].plot(v1, k1_lsq, 'k', label='k1_ga+lsq')
+    ax[1].plot(v1, k2_lsq, 'r', label='k2_ga+lsq')
     ax[1].set_xlim(2000, 400)
     ax[1].legend(bbox_to_anchor=(1, 1))
     ax[1].set_title('GA+LSQ modelled k2')
     ax[1].set_yscale('log')
     plt.legend()
-    fig.savefig(fname+'_k.png', bbox_inches="tight")
+    fig.savefig(fname+'_nk.png', bbox_inches="tight")
     plt.show()
 
     rfit_ga_omega1 = rfit_ga[:L]
@@ -338,11 +341,7 @@ while num_oscillators < total_num_oscillators:
     fig.savefig(fname+'_res.png', bbox_inches="tight")
     plt.show()
 
-
-    ga_lsq_chisq = {}
-
-    chisq_val = chisq(r[1:], rfit_lsq[1:])
-
+    chisq_val = chisq(rfit_lsq, r)
 
     print("Chi-square goodness of fitness is ", chisq_val)
 
@@ -431,6 +430,8 @@ while num_oscillators < total_num_oscillators:
                                 "k2"])
     df.to_excel(fname+"_optical_constants.xlsx")
 
+
+
     dict_chi = {'run': [run],
                 'N': [N],
                 'chisq_all': [chisq_val],
@@ -442,6 +443,9 @@ while num_oscillators < total_num_oscillators:
                 'chisq_R6': [chisq_val_R6],
                 'chisq_R7': [chisq_val_R7]
                 }
+
+    df = pd.DataFrame(dict_chi)
+    df.to_excel(fname+"_chisq.xlsx")
 
     if run == 1:
         df_chi = pd.DataFrame(dict_chi)
